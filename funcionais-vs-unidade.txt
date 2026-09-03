@@ -1,0 +1,2 @@
+1. Testes Funcionais focam na perspectiva do usuario final e testam a aplicacao de ponta a ponta.
+2. Testes de Unidade focam na perspectiva do desenvolvedor e testam pequenas partes do codigo de forma isolada.
