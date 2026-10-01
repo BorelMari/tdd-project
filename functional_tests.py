@@ -16,12 +16,12 @@ class NewVisitorTest(LiveServerTestCase):
         # Maria entra na página principal do app
         self.browser.get(self.live_server_url)
 
-        # Ela nota que o título da página menciona TODO
+        # Ela nota que o título da página e o cabeçalho mencionam To-Do
         self.assertIn('To-Do', self.browser.title)
         header_text = self.browser.find_element(By.TAG_NAME, 'h1').text  
         self.assertIn('To-Do', header_text)
 
-        # Ela é convidada a entrar com um item TODO imediatamente
+        # Ela é convidada a entrar com um item To-Do imediatamente
         inputbox = self.browser.find_element(By.ID, 'id_new_item')  
         self.assertEqual(inputbox.get_attribute('placeholder'), 'Enter a to-do item')
 
@@ -29,12 +29,23 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys('Estudar testes funcionais')
 
         # Quando ela aperta enter, a página atualiza, e mostra a lista
+        # "1: Estudar testes funcionais" como um item da lista To-Do
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
-        
+
         table = self.browser.find_element(By.ID, 'id_list_table')
         rows = table.find_elements(By.TAG_NAME, 'tr')  
-        self.assertTrue(
-            any(row.text == '1: Estudar testes funcionais' for row in rows),
-            "New to-do item did not appear in table"
-        )
+        self.assertIn('1: Estudar testes funcionais', [row.text for row in rows])
+
+        # Ainda existe uma caixa de texto convidando-a a adicionar outro item.
+        # Ela entra com "Usar modelos para salvar itens"
+        inputbox = self.browser.find_element(By.ID, 'id_new_item')
+        inputbox.send_keys('Usar modelos para salvar itens')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
+
+        # A página atualiza novamente e agora mostra ambos os itens na lista
+        table = self.browser.find_element(By.ID, 'id_list_table')
+        rows = table.find_elements(By.TAG_NAME, 'tr')
+        self.assertIn('1: Estudar testes funcionais', [row.text for row in rows])
+        self.assertIn('2: Usar modelos para salvar itens', [row.text for row in rows])
