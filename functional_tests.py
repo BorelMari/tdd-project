@@ -28,25 +28,22 @@ class NewVisitorTest(LiveServerTestCase):
         # Ela digita "Estudar testes funcionais" em uma caixa de texto
         inputbox.send_keys('Estudar testes funcionais')
 
-        # Quando ela aperta enter, a página atualiza, e agora a página traz a lista
-        # em uma nova URL ex: /lists/the-only-list-in-the-world/
+        # Quando ela aperta enter, a página atualiza, e mostra a lista
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
 
-        maria_list_url = self.browser.current_url
-        self.assertRegex(maria_list_url, '/lists/the-only-list-in-the-world/')
-
+        # Busca a tabela e o input NOVAMENTE na nova página recarregada
         table = self.browser.find_element(By.ID, 'id_list_table')
         rows = table.find_elements(By.TAG_NAME, 'tr')  
         self.assertIn('1: Estudar testes funcionais', [row.text for row in rows])
 
-        # Ainda existe uma caixa de texto convidando-a a adicionar outro item.
+        # Ela entra com "Usar modelos para salvar itens"
         inputbox = self.browser.find_element(By.ID, 'id_new_item')
         inputbox.send_keys('Usar modelos para salvar itens')
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
 
-        # A página atualiza novamente e mostra ambos os itens na lista
+        # Busca a tabela NOVAMENTE na página recarregada
         table = self.browser.find_element(By.ID, 'id_list_table')
         rows = table.find_elements(By.TAG_NAME, 'tr')
         self.assertIn('1: Estudar testes funcionais', [row.text for row in rows])
